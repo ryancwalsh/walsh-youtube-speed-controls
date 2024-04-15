@@ -86,9 +86,9 @@
 
     }
 
-    window.onkeyup = function (e) {
-        var code = e.keyCode,
-            ctrlKey = e.ctrlKey,
+    window.onkeyup = function (event) {
+        var keyCode = event.keyCode,
+            ctrlKey = event.ctrlKey,
             video = document.getElementsByTagName("video")[0],
             mediaElement = document.getElementById("movie_player"),
             mediaElementChildren = mediaElement.getElementsByTagName("*"),
@@ -101,7 +101,7 @@
         }
 
         // Playback speeds
-        if (code === KEYCODES.SPEEDUP) {
+        if (keyCode === KEYCODES.SPEEDUP) {
             speedup = !speedup;
 
             if (speedup) {
@@ -119,7 +119,7 @@
             displayText(video.playbackRate, mediaElement);
         }
 
-        // Check if the media element, or any of it's children are active.
+        // Check if the media element, or any of its children are active.
         // Else we'll be overwriting the previous actions.
         for (i = 0; i < mediaElementChildren.length; i = i + 1) {
             if (mediaElementChildren[i] === activeElement) {
@@ -133,8 +133,8 @@
         }
 
         // If seek key
-        if (SEEK_JUMP_KEYCODE_MAPPINGS[code] !== undefined) {
-            video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[code] / 10) * video.duration;
+        if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
+            video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
         }
 
     };

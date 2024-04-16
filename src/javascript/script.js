@@ -4,30 +4,30 @@
 
     "use strict";
 
-    var SEEK_JUMP_KEYCODE_MAPPINGS = {
-            // 0 to 9
-            "48": 0,
-            "49": 1,
-            "50": 2,
-            "51": 3,
-            "52": 4,
-            "53": 5,
-            "54": 6,
-            "55": 7,
-            "56": 8,
-            "57": 9,
-            // 0 to 9 on numpad
-            "96": 0,
-            "97": 1,
-            "98": 2,
-            "99": 3,
-            "100": 4,
-            "101": 5,
-            "102": 6,
-            "103": 7,
-            "104": 8,
-            "105": 9
-        };
+    // var SEEK_JUMP_KEYCODE_MAPPINGS = {
+    //         // 0 to 9
+    //         "48": 0,
+    //         "49": 1,
+    //         "50": 2,
+    //         "51": 3,
+    //         "52": 4,
+    //         "53": 5,
+    //         "54": 6,
+    //         "55": 7,
+    //         "56": 8,
+    //         "57": 9,
+    //         // 0 to 9 on numpad
+    //         "96": 0,
+    //         "97": 1,
+    //         "98": 2,
+    //         "99": 3,
+    //         "100": 4,
+    //         "101": 5,
+    //         "102": 6,
+    //         "103": 7,
+    //         "104": 8,
+    //         "105": 9
+    //     };
 
     function inputActive(currentElement) {
         // If on an input or textarea
@@ -90,7 +90,7 @@
     window.onkeyup = function (event) {
         let
             key = event.key,
-            ctrlKey = event.ctrlKey,
+            // ctrlKey = event.ctrlKey,
             video = document.getElementsByTagName("video")[0],
             mediaElement = document.getElementById("movie_player"),
             mediaElementChildren = mediaElement.getElementsByTagName("*"),
@@ -102,10 +102,12 @@
             return;
         }
 
-        if (key === '`') {
-            const amountToChange = ctrlKey ? -0.1 : 0.1;
-            video.playbackRate = increment(video.playbackRate, amountToChange);
+        if (key === '[') {
+            video.playbackRate = increment(video.playbackRate, -0.1);
+        } else if (key === ']') { 
+            video.playbackRate = increment(video.playbackRate, 0.1);
         }
+
         displayText(video.playbackRate, mediaElement);
 
         // Check if the media element, or any of its children are active.
@@ -122,9 +124,10 @@
         }
 
         // If seek key
-        if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
-            video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
-        }
+        // TODO:
+        // if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
+        //     video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
+        // }
 
     };
 

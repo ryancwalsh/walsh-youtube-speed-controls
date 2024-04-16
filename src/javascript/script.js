@@ -4,16 +4,7 @@
 
     "use strict";
 
-    var speedup = false,
-        KEYCODES = {
-            "SPACEBAR": 32,
-            "LEFT": 37,
-            "UP": 38,
-            "RIGHT": 39,
-            "DOWN": 40,
-            "SPEEDUP": 192
-        },
-        SEEK_JUMP_KEYCODE_MAPPINGS = {
+    var SEEK_JUMP_KEYCODE_MAPPINGS = {
             // 0 to 9
             "48": 0,
             "49": 1,
@@ -82,12 +73,23 @@
         element.style.filter = 'alpha(opacity=' + (0.8 * 100) + ")"
         setTimeout(function () {
             fadeout(element, 0.8);
-        }, 1500);
+        }, 2500);
 
     }
 
+    /**
+     * instead of using math.js to preserve precision
+     */
+    function increment(originalValue, amountToChange) {
+        let result = originalValue * 10;
+        const x = amountToChange * 10;
+        result += x;
+        return result / 10;
+    }
+
     window.onkeyup = function (event) {
-        var keyCode = event.keyCode,
+        let
+            key = event.key,
             ctrlKey = event.ctrlKey,
             video = document.getElementsByTagName("video")[0],
             mediaElement = document.getElementById("movie_player"),
@@ -100,24 +102,11 @@
             return;
         }
 
-        // Playback speeds
-        if (keyCode === KEYCODES.SPEEDUP) {
-            speedup = !speedup;
-
-            if (speedup) {
-                video.playbackRate = 2;
-            } else {
-                video.playbackRate = 1;
-            }
-
-            // If ctrl is being pressed turn to x3 speed
-            if (ctrlKey) {
-                video.playbackRate = 3;
-                speedup = true;
-            }
-
-            displayText(video.playbackRate, mediaElement);
+        if (key === '`') {
+            const amountToChange = ctrlKey ? -0.1 : 0.1;
+            video.playbackRate = increment(video.playbackRate, amountToChange);
         }
+        displayText(video.playbackRate, mediaElement);
 
         // Check if the media element, or any of its children are active.
         // Else we'll be overwriting the previous actions.

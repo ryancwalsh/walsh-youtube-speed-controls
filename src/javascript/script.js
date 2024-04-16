@@ -42,39 +42,54 @@
 
     // https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
     function fadeout(element, startOpacity) {
-        var op = startOpacity; // initial opacity
-        var timer = setInterval(function () {
-            if (op <= 0.1) {
+        let opacity = startOpacity; // initial opacity
+        const timer = setInterval(function () {
+            if (opacity <= 0.1) {
                 clearInterval(timer);
                 element.style.display = 'none';
             }
-            element.style.opacity = op;
-            element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-            op -= op * 0.1;
+            element.style.opacity = opacity;
+            element.style.filter = 'alpha(opacity=' + opacity * 100 + ")";
+            opacity -= opacity * 0.1;
         }, 50);
     }
 
-    function displayText(speed, boundingElement) {
-        var elementId = "youtube-extension-text-box",
-            HTML = '<div id="' + elementId + '">' + speed + 'x</div>',
-            element = document.getElementById(elementId);
+    function displayTextOverlay(speed, boundingElement) {
+        const elementId = "youtube-extension-text-box";        
+        let HTML = '<div id="' + elementId + '">' + speed + 'x</div>';
+        let element = document.getElementById(elementId);
 
-        // If the element doesn't exist, append it to the body
-        // must check if it already exists
-        if (!element) {
+        // If the element doesn't exist, append it to the body.
+        if (element) {
+            element.innerHTML = speed + "x";
+        } else {
             boundingElement.insertAdjacentHTML('afterbegin', HTML);
             element = document.getElementById(elementId);
-        } else {
-            element.innerHTML = speed + "x";
         }
 
         element.style.display = 'block';
-        element.style.opacity = 0.8;
-        element.style.filter = 'alpha(opacity=' + (0.8 * 100) + ")"
+        const opacity = 0.8;
+        element.style.opacity = opacity;
+        element.style.filter = 'alpha(opacity=' + (opacity * 100) + ")"
         setTimeout(function () {
-            fadeout(element, 0.8);
+            fadeout(element, opacity);
         }, 2500);
 
+    }
+
+    function displayLabelInLogo(speed) { 
+        const logoLabelId = "youtube-extension-label-in-logo";
+        const boundingElement = document.getElementById("logo");
+        let HTML = '<div id="' + logoLabelId + '">' + speed + 'x</div>';
+        let element = document.getElementById(logoLabelId);
+
+        // If the element doesn't exist, append it to the body.
+        if (element) {
+            element.innerHTML = speed + "x";
+        } else {
+            boundingElement.insertAdjacentHTML('afterbegin', HTML);
+            element = document.getElementById(logoLabelId);
+        }
     }
 
     /**
@@ -108,7 +123,8 @@
             video.playbackRate = increment(video.playbackRate, 0.1);
         }
 
-        displayText(video.playbackRate, mediaElement);
+        displayTextOverlay(video.playbackRate, mediaElement);
+        displayLabelInLogo(video.playbackRate);
 
         // Check if the media element, or any of its children are active.
         // Else we'll be overwriting the previous actions.

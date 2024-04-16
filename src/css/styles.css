@@ -20,3 +20,10 @@
     z-index: 99999999999999999;
     opacity: 0.8;;
 }
+
+#youtube-extension-label-in-logo{
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+}

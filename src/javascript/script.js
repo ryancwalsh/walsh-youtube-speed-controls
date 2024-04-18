@@ -26,14 +26,14 @@
     }, 50);
   }
 
-  function displayTextOverlay(speed, boundingElement) {
+  function displayTextOverlay(content, boundingElement) {
     const elementId = 'youtube-extension-text-box';
-    const HTML = '<div id="' + elementId + '">' + speed + 'x</div>';
+    const HTML = '<div id="' + elementId + '">' + content + '</div>';
     let element = document.getElementById(elementId);
 
     // If the element doesn't exist, append it to the body.
     if (element) {
-      element.innerHTML = speed + 'x';
+      element.innerHTML = content;
     } else {
       boundingElement.insertAdjacentHTML('afterbegin', HTML);
       element = document.getElementById(elementId);
@@ -87,30 +87,34 @@
       return;
     }
 
-    if (key === '[') {
-      video.playbackRate = increment(video.playbackRate, -0.1);
-    } else if (key === ']') {
-      video.playbackRate = increment(video.playbackRate, 0.1);
-    }
+    if (['[', ']'].includes(key)) {
+      if (key === '[') {
+        video.playbackRate = increment(video.playbackRate, -0.1);
+      } else if (key === ']') {
+        video.playbackRate = increment(video.playbackRate, 0.1);
+      }
 
-    displayTextOverlay(video.playbackRate, mediaElement);
-    displayLabelInLogo(video.playbackRate);
+      displayTextOverlay(`${video.playbackRate}x`, mediaElement);
+      displayLabelInLogo(video.playbackRate);
+    }
 
     // Check if the media element, or any of its children are active.
     // Else we'll be overwriting the previous actions.
     for (index = 0; index < mediaElementChildren.length; index += 1) {
-      if (mediaElementChildren[index] === activeElement) {
+      if (mediaElementChildren[index] === activeElement || mediaElement === activeElement) {
         return;
       }
     }
 
-    // Also check if it's the media element itself.
-    if (mediaElement !== activeElement) {
-      // If seek key
-      // TODO:
-      // if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
-      //     video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
-      // }
+    // If seek key
+    // TODO:
+    // if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
+    //     video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
+    // }
+    if (key === 'b') {
+      const jumpBackSeconds = 10;
+      video.currentTime -= jumpBackSeconds;
+      displayTextOverlay(`Back ${jumpBackSeconds} sec`, mediaElement);
     }
   };
 })();

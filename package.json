@@ -1,0 +1,7 @@
+{
+  "devDependencies": {
+    "eslint": "^8.51.0",
+    "eslint-config-canonical": "^42.8.1",
+    "typescript": "^5.4.5"
+  }
+}

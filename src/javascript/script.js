@@ -2,6 +2,8 @@
 /* global document */
 /* global window */
 (function () {
+  let savedPlaybackRate = 1; // Default playback speed
+
   function inputActive(currentElement) {
     // If on an input or textarea
     if (currentElement.tagName.toLowerCase() === 'input' || currentElement.tagName.toLowerCase() === 'textarea' || currentElement.isContentEditable) {
@@ -73,10 +75,17 @@
     return result / 10;
   }
 
+  function setPlaybackRate(video, rate) {
+    video.playbackRate = rate;
+    console.log(`setPlaybackRate ${video.playbackRate}x`);
+    displayTextOverlay(`${video.playbackRate}x`, document.querySelector('#movie_player'));
+    displayLabelInLogo(video.playbackRate);
+  }
+
   window.onkeyup = function (event) {
     const key = event.key;
     // ctrlKey = event.ctrlKey,
-    const video = document.querySelectorAll('video')[0];
+    const video = document.querySelector('video');
     const mediaElement = document.querySelector('#movie_player');
     const mediaElementChildren = mediaElement.querySelectorAll('*');
     const activeElement = document.activeElement;
@@ -89,13 +98,10 @@
 
     if (['[', ']'].includes(key)) {
       if (key === '[') {
-        video.playbackRate = increment(video.playbackRate, -0.1);
+        setPlaybackRate(video, increment(video.playbackRate, -0.1));
       } else if (key === ']') {
-        video.playbackRate = increment(video.playbackRate, 0.1);
+        setPlaybackRate(video, increment(video.playbackRate, 0.1));
       }
-
-      displayTextOverlay(`${video.playbackRate}x`, mediaElement);
-      displayLabelInLogo(video.playbackRate);
     }
 
     // Check if the media element, or any of its children are active.
@@ -106,15 +112,39 @@
       }
     }
 
-    // If seek key
-    // TODO:
-    // if (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] !== undefined) {
-    //     video.currentTime = (SEEK_JUMP_KEYCODE_MAPPINGS[keyCode] / 10) * video.duration;
+    // This is unnecessary because the left arrow button already allows jumping backwards.
+    // // If seek key
+    // if (key === 'b') {
+    //   const jumpBackSeconds = 10;
+    //   video.currentTime -= jumpBackSeconds;
+    //   displayTextOverlay(`Back ${jumpBackSeconds} sec`, mediaElement);
     // }
-    if (key === 'b') {
-      const jumpBackSeconds = 10;
-      video.currentTime -= jumpBackSeconds;
-      displayTextOverlay(`Back ${jumpBackSeconds} sec`, mediaElement);
-    }
   };
+
+  // // Save playback rate before ad plays and restore it after. (This came from ChatGPT but might not work and might hang the browser.)
+  // const observer = new MutationObserver(function (mutations) {
+  //   mutations.forEach(function (mutation) {
+  //     const video = document.querySelector('video');
+  //     if (!video) return;
+
+  //     if (video.playbackRate !== savedPlaybackRate) {
+  //       savedPlaybackRate = video.playbackRate;
+  //     }
+
+  //     const adsContainer = document.querySelector('.ad-interrupting');
+  //     if (adsContainer && adsContainer.style.display !== 'none') {
+  //       console.log('Ad is playing.');
+  //       video.playbackRate = 1;
+  //     } else if (!adsContainer || adsContainer.style.display === 'none') {
+  //       console.log('Ad finished. Restoring playback rate.');
+  //       setPlaybackRate(video, savedPlaybackRate);
+  //     }
+  //   });
+  // });
+
+  // observer.observe(document.body, {
+  //   attributes: true,
+  //   childList: true,
+  //   subtree: true,
+  // });
 })();

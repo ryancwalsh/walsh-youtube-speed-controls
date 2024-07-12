@@ -52,7 +52,6 @@
 
   function displayLabelInLogo(speed) {
     const logoLabelId = 'youtube-extension-label-in-logo';
-    const boundingElement = document.querySelector('#logo');
     const HTML = '<div id="' + logoLabelId + '">' + speed + 'x</div>';
     let element = document.getElementById(logoLabelId);
 
@@ -60,8 +59,10 @@
     if (element) {
       element.innerHTML = speed + 'x';
     } else {
-      boundingElement.insertAdjacentHTML('afterbegin', HTML);
-      element = document.getElementById(logoLabelId);
+      const boundingElement = document.querySelector('#logo');
+      if (boundingElement) {
+        boundingElement.insertAdjacentHTML('afterbegin', HTML);
+      }
     }
   }
 
@@ -76,10 +77,12 @@
   }
 
   function setPlaybackRate(video, rate) {
-    video.playbackRate = rate;
-    console.log(`setPlaybackRate ${video.playbackRate}x`);
-    displayTextOverlay(`${video.playbackRate}x`, document.querySelector('#movie_player'));
-    displayLabelInLogo(video.playbackRate);
+    if (video) {
+      video.playbackRate = rate;
+      console.log(`setPlaybackRate ${video.playbackRate}x`);
+      displayTextOverlay(`${video.playbackRate}x`, document.querySelector('#movie_player'));
+      displayLabelInLogo(video.playbackRate);
+    }
   }
 
   window.onkeyup = function (event) {

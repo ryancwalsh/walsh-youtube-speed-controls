@@ -3,7 +3,7 @@
 
     "name": "Walsh YouTube Speed Controls",
     "description": "Click the bracket keys (`[` or `]`) to change playback speed.",
-    "version": "1.3",
+    "version": "1.4",
     
     "content_scripts": [
         {

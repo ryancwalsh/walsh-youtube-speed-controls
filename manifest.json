@@ -1,27 +1,18 @@
 {
-    "manifest_version": 3,
-
-    "name": "Walsh YouTube Speed Controls",
-    "description": "Click the bracket keys (`[` or `]`) to change playback speed.",
-    "version": "1.4",
-    
-    "content_scripts": [
-        {
-            "matches": [
-              "https://*.youtube.com/*"
-            ],
-            "js": [
-                "src/javascript/script.js"
-            ],
-            "css": [
-                "src/css/styles.css"
-            ]
-        }
-    ],
-
-    "icons": {
-        "16": "src/images/icon16.png",
-        "48": "src/images/icon48.png",
-        "128": "src/images/icon128.png"
+  "content_scripts": [
+    {
+      "matches": ["https://*.youtube.com/*", "https://*.google.com/*", "https://*.googleapis.com/*"],
+      "js": ["src/javascript/script.js"],
+      "css": ["src/css/styles.css"]
     }
+  ],
+  "description": "Click the bracket keys (`[` or `]`) to change playback speed.",
+  "icons": {
+    "16": "src/images/icon16.png",
+    "48": "src/images/icon48.png",
+    "128": "src/images/icon128.png"
+  },
+  "manifest_version": 3,
+  "name": "Walsh YouTube Speed Controls",
+  "version": "1.4"
 }

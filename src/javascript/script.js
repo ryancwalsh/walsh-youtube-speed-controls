@@ -4,15 +4,11 @@
 /* global document */
 /* global window */
 (function () {
-  const savedPlaybackRate = 1; // Default playback speed
+  // const savedPlaybackRate = 1; // Default playback speed
 
   function inputActive(currentElement) {
     // If on an input or textarea
-    if (
-      currentElement.tagName.toLowerCase() === "input" ||
-      currentElement.tagName.toLowerCase() === "textarea" ||
-      currentElement.isContentEditable
-    ) {
+    if (currentElement.tagName.toLowerCase() === 'input' || currentElement.tagName.toLowerCase() === 'textarea' || currentElement.isContentEditable) {
       return true;
     } else {
       return false;
@@ -31,7 +27,7 @@
     const timer = setInterval(function () {
       if (opacity <= stepSize) {
         clearInterval(timer);
-        element.style.display = "none";
+        element.style.display = 'none';
       }
 
       setOpacity(element, opacity);
@@ -40,23 +36,21 @@
   }
 
   function displayTextOverlay(content, boundingElement) {
-    const containerElementId = "youtube-extension-text-box-centerer";
-    const elementId = "youtube-extension-text-box";
+    const containerElementId = 'youtube-extension-text-box-centerer'; // arbitrary name
+    const elementId = 'youtube-extension-text-box'; // arbitrary name
     const containerHTML = `<div id="${containerElementId}"><div id="${elementId}">${content}</div></div>`;
-    const containerElement = document.querySelector(
-      "#youtube-extension-text-box"
-    );
+    const containerElement = document.querySelector(`#${elementId}`);
     let element = document.getElementById(elementId);
 
     // If the element doesn't exist, append it to the body.
     if (containerElement) {
       element.innerHTML = content;
     } else {
-      boundingElement.insertAdjacentHTML("afterbegin", containerHTML);
+      boundingElement.insertAdjacentHTML('afterbegin', containerHTML);
       element = document.getElementById(elementId);
     }
 
-    element.style.display = "block";
+    element.style.display = 'block';
     const opacity = 0.8;
     setOpacity(element, opacity);
     setTimeout(function () {
@@ -65,17 +59,17 @@
   }
 
   function displayLabelInLogo(speed) {
-    const logoLabelId = "youtube-extension-label-in-logo";
-    const HTML = '<div id="' + logoLabelId + '">' + speed + "x</div>";
+    const logoLabelId = 'youtube-extension-label-in-logo';
+    const HTML = '<div id="' + logoLabelId + '">' + speed + 'x</div>';
     const element = document.getElementById(logoLabelId);
 
     // If the element doesn't exist, append it to the body.
     if (element) {
-      element.innerHTML = speed + "x";
+      element.innerHTML = speed + 'x';
     } else {
-      const boundingElement = document.querySelector("#logo");
+      const boundingElement = document.querySelector('#logo');
       if (boundingElement) {
-        boundingElement.insertAdjacentHTML("afterbegin", HTML);
+        boundingElement.insertAdjacentHTML('afterbegin', HTML);
       }
     }
   }
@@ -91,16 +85,16 @@
     const remainingSeconds = Math.floor(seconds % 60);
 
     // Format the time components into a string:
-    let formattedTime = "";
+    let formattedTime = '';
     if (hours > 0) {
-      formattedTime += hours + "h";
+      formattedTime += hours + 'h';
     }
 
     if (minutes > 0 || hours > 0) {
-      formattedTime += minutes + "m";
+      formattedTime += minutes + 'm';
     }
 
-    formattedTime += remainingSeconds + "s";
+    formattedTime += remainingSeconds + 's';
 
     return formattedTime;
   }
@@ -119,10 +113,7 @@
     if (video) {
       video.playbackRate = rate;
       console.log(`setPlaybackRate ${video.playbackRate}x`);
-      displayTextOverlay(
-        `${video.playbackRate}x`,
-        document.querySelector("#movie_player")
-      );
+      displayTextOverlay(`${video.playbackRate}x`, document.querySelector('#movie_player'));
       displayLabelInLogo(video.playbackRate);
     }
   }
@@ -130,8 +121,8 @@
   window.onkeyup = function (event) {
     const key = event.key;
     // ctrlKey = event.ctrlKey,
-    const video = document.querySelectorAll("video")[0];
-    const mediaElement = document.querySelector("#movie_player");
+    const video = document.querySelectorAll('video')[0];
+    const boundingElement = document.querySelector('#movie_player, div.XXKL8c');
     const activeElement = document.activeElement;
 
     // If an input/textarea element is active, don't go any further
@@ -139,12 +130,15 @@
       return;
     }
 
-    if (["[", "]"].includes(key)) {
-      if (key === "[") {
+    if (['[', ']'].includes(key)) {
+      if (key === '[') {
         setPlaybackRate(video, increment(video.playbackRate, -0.1));
-      } else if (key === "]") {
+      } else if (key === ']') {
         setPlaybackRate(video, increment(video.playbackRate, 0.1));
       }
+
+      displayTextOverlay(`${video.playbackRate}x`, boundingElement);
+      displayLabelInLogo(video.playbackRate);
     }
 
     // const mediaElementChildren = mediaElement.querySelectorAll('*');
@@ -164,13 +158,10 @@
     //   video.currentTime -= jumpBackSeconds;
     //   displayTextOverlay(`Back ${jumpBackSeconds} sec`, mediaElement);
     // }
-    if (key === "b") {
+    if (key === 'b') {
       const jumpBackSeconds = 10;
       video.currentTime -= jumpBackSeconds;
-      displayTextOverlay(
-        `↩️ Back ${jumpBackSeconds} sec to ${formatTime(video.currentTime)}`,
-        mediaElement
-      );
+      displayTextOverlay(`↩️ Back ${jumpBackSeconds} sec to ${formatTime(video.currentTime)}`, boundingElement);
     }
   };
 

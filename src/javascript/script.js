@@ -1,3 +1,5 @@
+// Video with no ads (to enable faster testing): https://www.youtube.com/watch?v=HPcXNMQZYL0
+
 /* eslint-disable unicorn/prefer-query-selector */
 /* global document */
 /* global window */
@@ -17,19 +19,24 @@
     }
   }
 
+  function setOpacity(element, opacity) {
+    element.style.opacity = opacity;
+    element.style.filter = `alpha(opacity=${opacity * 100})`;
+  }
+
   // https://stackoverflow.com/questions/6121203/how-to-do-fade-in-and-fade-out-with-javascript-and-css
-  function fadeout(element, startOpacity) {
+  function fadeOut(element, startOpacity) {
     let opacity = startOpacity; // initial opacity
+    const stepSize = 0.1;
     const timer = setInterval(function () {
-      if (opacity <= 0.1) {
+      if (opacity <= stepSize) {
         clearInterval(timer);
         element.style.display = "none";
       }
 
-      element.style.opacity = opacity;
-      element.style.filter = "alpha(opacity=" + opacity * 100 + ")";
-      opacity -= opacity * 0.1;
-    }, 50);
+      setOpacity(element, opacity);
+      opacity -= opacity * stepSize;
+    }, 200);
   }
 
   function displayTextOverlay(content, boundingElement) {
@@ -51,11 +58,10 @@
 
     element.style.display = "block";
     const opacity = 0.8;
-    element.style.opacity = opacity;
-    element.style.filter = "alpha(opacity=" + opacity * 100 + ")";
+    setOpacity(element, opacity);
     setTimeout(function () {
-      fadeout(element, opacity);
-    }, 2_500);
+      fadeOut(element, opacity);
+    }, 500);
   }
 
   function displayLabelInLogo(speed) {
@@ -72,6 +78,31 @@
         boundingElement.insertAdjacentHTML("afterbegin", HTML);
       }
     }
+  }
+
+  /**
+   * @param {number} seconds
+   * @returns E.g. "3h 12m 25s"
+   */
+  function formatTime(seconds) {
+    // Calculate hours, minutes, and remaining seconds:
+    const hours = Math.floor(seconds / 3_600);
+    const minutes = Math.floor((seconds % 3_600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    // Format the time components into a string:
+    let formattedTime = "";
+    if (hours > 0) {
+      formattedTime += hours + "h";
+    }
+
+    if (minutes > 0 || hours > 0) {
+      formattedTime += minutes + "m";
+    }
+
+    formattedTime += remainingSeconds + "s";
+
+    return formattedTime;
   }
 
   /**
@@ -99,11 +130,9 @@
   window.onkeyup = function (event) {
     const key = event.key;
     // ctrlKey = event.ctrlKey,
-    const video = document.querySelector("video");
+    const video = document.querySelectorAll("video")[0];
     const mediaElement = document.querySelector("#movie_player");
-    const mediaElementChildren = mediaElement.querySelectorAll("*");
     const activeElement = document.activeElement;
-    let index;
 
     // If an input/textarea element is active, don't go any further
     if (inputActive(activeElement)) {
@@ -118,16 +147,15 @@
       }
     }
 
-    // Check if the media element, or any of its children are active.
-    // Else we'll be overwriting the previous actions.
-    for (index = 0; index < mediaElementChildren.length; index += 1) {
-      if (
-        mediaElementChildren[index] === activeElement ||
-        mediaElement === activeElement
-      ) {
-        return;
-      }
-    }
+    // const mediaElementChildren = mediaElement.querySelectorAll('*');
+    // let index;
+    // // Check if the media element, or any of its children are active.
+    // // Else we'll be overwriting the previous actions.
+    // for (index = 0; index < mediaElementChildren.length; index += 1) {
+    //   if (mediaElementChildren[index] === activeElement || mediaElement === activeElement) {
+    //     return;
+    //   }
+    // }
 
     // This is unnecessary because the left arrow button already allows jumping backwards.
     // // If seek key
@@ -139,7 +167,10 @@
     if (key === "b") {
       const jumpBackSeconds = 10;
       video.currentTime -= jumpBackSeconds;
-      displayTextOverlay(`↩️ Back ${jumpBackSeconds} sec`, mediaElement);
+      displayTextOverlay(
+        `↩️ Back ${jumpBackSeconds} sec to ${formatTime(video.currentTime)}`,
+        mediaElement
+      );
     }
   };
 
